@@ -12,6 +12,19 @@ export class TodolistComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    this.getFromLocaStorage();    
+  }
+  
+  saveOnLocalStorage() {
+    let stringJson = JSON.stringify(this.taskArray);
+    localStorage.setItem("todoLists", stringJson);
+  }
+
+  getFromLocaStorage() {
+    let itemsJSONString = localStorage.getItem("todoLists");
+    if (itemsJSONString != null) {
+      this.taskArray = JSON.parse(itemsJSONString)
+    }
   }
 
   onSubmit(form: NgForm) {
@@ -23,6 +36,8 @@ export class TodolistComponent implements OnInit {
       isEditable: false
     })
 
+    this.saveOnLocalStorage();
+
     form.reset();
   }
 
@@ -30,23 +45,28 @@ export class TodolistComponent implements OnInit {
     console.log(index);
 
     this.taskArray.splice(index, 1);
+
+    this.saveOnLocalStorage();
   }
 
   onCheck(index: number) {
     console.log(this.taskArray);
 
     this.taskArray[index].isCompleted = !this.taskArray[index].isCompleted;
+    
+    this.saveOnLocalStorage();
   }
 
   onEdit(index: number) {
     this.taskArray[index].isEditable = true;
+
+    this.saveOnLocalStorage();
   }
 
   onSave(index: number, newtask: string) {
     this.taskArray[index].taskName = newtask;
     this.taskArray[index].isEditable = false;
+    this.saveOnLocalStorage();
   }
-
-
 
 }
